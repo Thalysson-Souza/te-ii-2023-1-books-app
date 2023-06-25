@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      {{createMode ? 'Cadastro ' : 'Edição ' }} de Animal
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="animalForm">
+    <ion-list>
+
+      <ion-item>
+        <ion-label position="floating">Nome:</ion-label>
+        <ion-input formControlName="nome" placeholder="Digite o nome da pessoa"></ion-input>
+        <ion-note slot="error" *ngIf="animalForm.controls['nome'].hasError('required')">
+          O campo é obrigatório
+        </ion-note>
+        <ion-note slot="error" *ngIf="animalForm.controls['nome'].hasError('minlength')">
+          O campo tem {{animalForm.controls['nome'].errors?.['minlength'].actualLength}} caracteres,
+          entretanto deve ter no mínimo {{animalForm.controls['nome'].errors?.['minlength'].requiredLength}}
+          caracteres
+        </ion-note>
+        <ion-note slot="error" *ngIf="animalForm.controls['nome'].hasError('maxlength')">
+          O campo deve ter no máximo {{animalForm.controls['nome'].errors?.['maxlength'].requiredLength}}
+          caracteres
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Gênero</ion-label>
+        <ion-select formControlName="genero" placeholder="Selecione o gênero">
+          <ion-select-option value="F">Fêmea</ion-select-option>
+          <ion-select-option value="M">Macho</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label> Data de nascimento </ion-label>
+        <ion-datetime-button datetime="dataNasc"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime formControlName="dataNascimento" id="dataNasc" presentation="date" showDefaultButtons="true"
+              doneText="Selecionar" cancelText="Cancelar" showDefaultTitle="true">
+              <span slot="title">Selecione a data de nascimento</span>
+            </ion-datetime>
+          </ng-template>
+        </ion-modal>
+        <ion-note slot="error" *ngIf="animalForm.controls['dataNascimento'].hasError('invalidData')">
+          Data não pode ser futura
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Responsável</ion-label>
+        <ion-select [compareWith]="compareWith" formControlName="pessoa" placeholder="Informe a pessoa">
+          <ion-select-option *ngFor="let n of pessoas" [value]="n">
+            {{n.nome}}
+          </ion-select-option>
+        </ion-select>
+        <ion-note slot="error" *ngIf="animalForm.controls['pessoa'].hasError('required')">
+          O campo é obrigatório
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Descrição:</ion-label>
+        <ion-textarea formControlName="descricao" [autoGrow]="true" rows="5"></ion-textarea>
+      </ion-item>
+
+    </ion-list>
+    <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+      <ion-fab-button (click)="save()" [disabled]="animalForm.invalid">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+    <ion-fab horizontal="start" vertical="bottom" slot="fixed">
+      <ion-fab-button color="light" (click)="cancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </form>
+</ion-content>
+
+<ion-footer>
+
+</ion-footer>

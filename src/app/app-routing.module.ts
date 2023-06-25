@@ -9,15 +9,23 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   },
   {
-    path: 'livros',
-    loadChildren: () => import('./livro/livro.module').then(m => m.LivroModule)
+    path: 'pessoa',
+    loadChildren: () => import('./pessoa/pessoa.module').then(m => m.PessoaModule)
   },
   {
-    path: 'autores',
-    loadChildren: () => import('./autor/autor.module').then(m => m.AutorModule)
+    path: 'funcionario',
+    loadChildren: () => import('./funcionario/funcionario.module').then(m => m.FuncionarioModule)
+  },
+  {
+    path: 'animal',
+    loadChildren: () => import('./animal/animal.module').then(m => m.AnimalModule)
+  },
+  {
+    path: 'atendimento',
+    loadChildren: () => import('./atendimento/atendimento.module').then(m => m.AtendimentoModule)
   }
 ];
 
@@ -27,4 +35,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

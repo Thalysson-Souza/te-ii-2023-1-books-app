@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      {{createMode ? 'Cadastro ' : 'Edição ' }} de Funcionário
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="funcionarioForm">
+    <ion-list>
+
+      <ion-item>
+        <ion-label>Pessoa</ion-label>
+        <ion-select [compareWith]="compareWith" formControlName="pessoa" placeholder="Informe a pessoa">
+          <ion-select-option *ngFor="let n of pessoas" [value]="n">
+            {{n.nome}}
+          </ion-select-option>
+        </ion-select>
+        <ion-note slot="error" *ngIf="funcionarioForm.controls['pessoa'].hasError('required')">
+          O campo é obrigatório
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Salário:</ion-label>
+        <ion-input formControlName="salario" placeholder="Digite o salário do funcionário"></ion-input>
+        <ion-note slot="error" *ngIf="funcionarioForm.controls['salario'].hasError('required')">
+          O campo é obrigatório
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Função:</ion-label>
+        <ion-input formControlName="funcao" placeholder="Digite a função do funcionário"></ion-input>
+        <ion-note slot="error" *ngIf="funcionarioForm.controls['funcao'].hasError('required')">
+          O campo é obrigatório
+        </ion-note>
+        <ion-note slot="error" *ngIf="funcionarioForm.controls['funcao'].hasError('minlength')">
+          O campo tem {{funcionarioForm.controls['funcao'].errors?.['minlength'].actualLength}} caracteres, entretanto
+          deve
+          ter no mínimo {{funcionarioForm.controls['funcao'].errors?.['minlength'].requiredLength}} caracteres
+        </ion-note>
+        <ion-note slot="error" *ngIf="funcionarioForm.controls['funcao'].hasError('maxlength')">
+          O campo deve ter no máximo {{funcionarioForm.controls['funcao'].errors?.['maxlength'].requiredLength}}
+          caracteres
+        </ion-note>
+      </ion-item>
+
+    </ion-list>
+    <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+      <ion-fab-button (click)="save()" [disabled]="funcionarioForm.invalid">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+    <ion-fab horizontal="start" vertical="bottom" slot="fixed">
+      <ion-fab-button color="light" (click)="cancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </form>
+</ion-content>
+
+<ion-footer>
+
+</ion-footer>

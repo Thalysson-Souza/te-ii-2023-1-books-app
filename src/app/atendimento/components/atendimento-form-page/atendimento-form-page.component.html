@@ -1,0 +1,96 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      {{createMode ? 'Cadastro ' : 'Edição ' }} de Atendimento
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="atendimentoForm">
+    <ion-list>
+
+      <ion-item>
+        <ion-label> Data:</ion-label>
+        <ion-datetime-button datetime="data"></ion-datetime-button>
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime locale="pt-BR" formControlName="data" id="data" presentation="date" showDefaultButtons="true"
+              doneText="Selecionar" cancelText="Cancelar" showDefaultTitle="true">
+              <span slot="title">Selecione a data do atendimento</span>
+            </ion-datetime>
+          </ng-template>
+        </ion-modal>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Pessoa</ion-label>
+        <ion-select [compareWith]="compareWithPessoa" formControlName="pessoa" placeholder="Informe a pessoa atendida ">
+          <ion-select-option *ngFor="let n of pessoas" [value]="n">
+            {{n.nome}}
+          </ion-select-option>
+        </ion-select>
+        <ion-note slot="error" *ngIf="atendimentoForm.controls['pessoa'].hasError('required')">
+          O campo é obrigatório
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Funcionário</ion-label>
+        <ion-select [compareWith]="compareWithFuncionario" formControlName="funcionario"
+          placeholder="Informe o funcionário atendente ">
+          <ion-select-option *ngFor="let n of funcionarios" [value]="n">
+            {{n.pessoa?.nome}}
+          </ion-select-option>
+        </ion-select>
+        <ion-note slot="error" *ngIf="atendimentoForm.controls['pessoa'].hasError('required')">
+          O campo é obrigatório
+        </ion-note>
+        <ion-note slot="error" *ngIf="atendimentoForm.controls['funcionario'].hasError('invalidFunc')">
+          Funcionário não pode vender para si mesmo
+        </ion-note>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Valor:</ion-label>
+        <ion-input type="number" formControlName="valor" placeholder="Digite o nome da pessoa"></ion-input>
+        <ion-note slot="error" *ngIf="atendimentoForm.controls['valor'].hasError('required')">
+          O campo é obrigatório
+        </ion-note>
+      </ion-item>
+
+      <ion-list>
+        <ion-label>Pago:</ion-label>
+        <ion-radio-group value="pago">
+          <ion-item [ariaChecked]="true">
+            <ion-label>Não</ion-label>
+            <ion-radio slot="end" value="n"></ion-radio>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>Sim</ion-label>
+            <ion-radio slot="end" value="s"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+
+    </ion-list>
+    <ion-fab horizontal="end" vertical="bottom" slot="fixed">
+      <ion-fab-button (click)="save()" [disabled]="atendimentoForm.invalid">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+    <ion-fab horizontal="start" vertical="bottom" slot="fixed">
+      <ion-fab-button color="light" (click)="cancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </form>
+</ion-content>
+
+<ion-footer>
+
+</ion-footer>

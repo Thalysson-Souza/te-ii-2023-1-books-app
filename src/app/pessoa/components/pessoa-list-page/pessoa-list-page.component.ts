@@ -1,26 +1,26 @@
 import { Component, OnDestroy } from '@angular/core';
 import { AlertController, LoadingController, ToastController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { AutorService } from '../../services/autor.service';
-import { AutorInterface } from '../../types/autor.interface';
+import { PessoaService } from '../../services/pessoa.service';
+import { PessoaInterface } from '../../types/pessoa.interface';
 
 @Component({
-  selector: 'app-autor-list-page',
-  templateUrl: './autor-list-page.component.html',
+  selector: 'app-pessoa-list-page',
+  templateUrl: './pessoa-list-page.component.html',
 })
-export class AutorListPageComponent implements ViewWillEnter, ViewDidLeave, OnDestroy {
-  autores: AutorInterface[] = [];
+export class PessoaListPageComponent implements ViewWillEnter, ViewDidLeave, OnDestroy {
+  pessoas: PessoaInterface[] = [];
   subscriptions = new Subscription();
 
   constructor(
-    private autorService: AutorService,
+    private pessoaService: PessoaService,
     private alertController: AlertController,
     private loadingController: LoadingController,
     private toastController: ToastController,
   ) { }
 
   ionViewDidLeave(): void {
-    this.autores = [];
+    this.pessoas = [];
   }
 
   ionViewWillEnter(): void {
@@ -36,13 +36,13 @@ export class AutorListPageComponent implements ViewWillEnter, ViewDidLeave, OnDe
     const busyLoader = await this.loadingController.create({ spinner: 'circular' })
     busyLoader.present()
 
-    const subscription = this.autorService.getAutores()
-      .subscribe(async (autores) => {
-        this.autores = autores;
+    const subscription = this.pessoaService.getPessoas()
+      .subscribe(async (pessoas) => {
+        this.pessoas = pessoas;
         const toast = await this.toastController.create({
           color: 'success',
-          message: 'Lista de autores carregada com sucesso!',
-          duration: 15000,
+          message: 'Lista de pessoas carregada com sucesso!',
+          duration: 5000,
           buttons: ['X']
         })
         toast.present()
@@ -50,7 +50,7 @@ export class AutorListPageComponent implements ViewWillEnter, ViewDidLeave, OnDe
       }, async () => {
         const alerta = await this.alertController.create({
           header: 'Erro',
-          message: 'Não foi possível carregar a lista de autores',
+          message: 'Não foi possível carregar a lista de pessoas',
           buttons: ['Ok']
         })
         alerta.present()
@@ -59,16 +59,16 @@ export class AutorListPageComponent implements ViewWillEnter, ViewDidLeave, OnDe
     this.subscriptions.add(subscription);
   }
 
-  async remove(autor: AutorInterface) {
+  async remove(pessoa: PessoaInterface) {
     const alert = await this.alertController.create({
       header: 'Confirmação de exclusão',
-      message: `Deseja excluir o autor ${autor.nome}?`,
+      message: `Deseja excluir a pessoa ${pessoa.nome}?`,
       buttons: [
         {
           text: 'Sim',
           handler: () => {
             this.subscriptions.add(
-              this.autorService.remove(autor).subscribe(() => this.listar())
+              this.pessoaService.removePessoa(pessoa).subscribe(() => this.listar())
             );
           },
         },
@@ -78,13 +78,13 @@ export class AutorListPageComponent implements ViewWillEnter, ViewDidLeave, OnDe
     alert.present();
   }
 
-  favorite(autor: AutorInterface) {
-    const autoresFavoritesLocalStorage = window.localStorage.getItem('autoresFavoritos');
-    let arrayAutoresFavoritos = autoresFavoritesLocalStorage ? JSON.parse(autoresFavoritesLocalStorage) : [];
+  // favorite(autor: AutorInterface) {
+  //   const autoresFavoritesLocalStorage = window.localStorage.getItem('autoresFavoritos');
+  //   let arrayAutoresFavoritos = autoresFavoritesLocalStorage ? JSON.parse(autoresFavoritesLocalStorage) : [];
 
-    const contain = arrayAutoresFavoritos.some((a: AutorInterface) => a.id === autor.id);
-    arrayAutoresFavoritos = contain ? arrayAutoresFavoritos : [...arrayAutoresFavoritos, autor]
+  //   const contain = arrayAutoresFavoritos.some((a: AutorInterface) => a.id === autor.id);
+  //   arrayAutoresFavoritos = contain ? arrayAutoresFavoritos : [...arrayAutoresFavoritos, autor]
 
-    window.localStorage.setItem('autoresFavoritos', JSON.stringify(arrayAutoresFavoritos))
-  }
+  //   window.localStorage.setItem('autoresFavoritos', JSON.stringify(arrayAutoresFavoritos))
+  // }
 }
