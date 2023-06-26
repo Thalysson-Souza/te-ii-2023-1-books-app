@@ -1,9 +1,14 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
+    <ion-menu contentId="main-content" type="push">
       <ion-content>
         <ion-list id="inbox-list">
-          <ion-list-header>Clinica Veterinária</ion-list-header>
+          <ion-list-header>
+            <ion-avatar>
+              <img alt="Clinica Veterinaria"
+                src="https://i.pinimg.com/originals/6e/58/56/6e5856abe2b9da38b2180ee478c70f2d.jpg" />
+            </ion-avatar>
+          </ion-list-header>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
             <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false"

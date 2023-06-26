@@ -58,6 +58,14 @@ export class HomePage implements OnInit {
     const subscription = this.homeService.getInfoCount()
       .subscribe(async (home) => {
         this.home = home;
+        this.barChartData = {
+          labels: [''],
+          datasets: [
+            { data: [home.count_animais], label: 'Animais' },
+            { data: [home.count_pessoas], label: 'Pessoas' },
+            { data: [home.count_funcionarios], label: 'Funcionários' },
+          ]
+        };
         const toast = await this.toastController.create({
           color: 'success',
           message: 'Home carregado com sucesso!',
