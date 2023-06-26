@@ -125,6 +125,13 @@ export class AutorFormPageComponent implements OnInit, OnDestroy,
     this.subscription.unsubscribe()
   }
 
+  validaNomeAutor(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value.toLowerCase();
+      return value.includes('joao') || value.includes('xyz') ? { invalidName: true } : null;
+    }
+  }
+
   save(): void {
     if (this.createMode) {
       this.subscription.add(
