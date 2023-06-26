@@ -16,7 +16,7 @@ export class PessoaFormPageComponent implements OnInit, OnDestroy {
   subscription = new Subscription()
   createMode: boolean = false;
   editMode: boolean = false;
-  id!: number
+  id!: string
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -42,9 +42,9 @@ export class PessoaFormPageComponent implements OnInit, OnDestroy {
     if (this.editMode) {
 
       const id = this.activatedRoute.snapshot.paramMap.get('id');
-      this.id = id ? parseInt(id) : -1;
+      this.id = id ? id : '-1';
 
-      if (this.id !== -1) {
+      if (this.id !== '-1') {
         this.loadingService.on()
         this.pessoaService.getPessoa(this.id).subscribe((pessoa) => {
           this.pessoaForm.patchValue({
@@ -65,7 +65,7 @@ export class PessoaFormPageComponent implements OnInit, OnDestroy {
       nome: [
         'Nome qualquer',
         [
-          Validators.required,
+          // Validators.required,
           Validators.minLength(3),
           Validators.maxLength(50),
 
@@ -77,7 +77,7 @@ export class PessoaFormPageComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.minLength(11),
         Validators.maxLength(11),
-        this.validaCPF(),
+        // this.validaCPF(),
       ]],
       telefone: ['', [
         Validators.required,
@@ -147,10 +147,10 @@ export class PessoaFormPageComponent implements OnInit, OnDestroy {
           () => {
             this.router.navigate(['./pessoa'])
           },
-          async () => {
+          async (e) => {
             const alerta = await this.alertController.create({
               header: 'Erro',
-              message: 'Não foi possível salvar os dados da pessoa',
+              message: e.error?.statusCode != 500 ? e.error.message : 'Não foi possível salvar os dados da pessoa',
               buttons: ['Ok']
             })
             alerta.present()
@@ -165,10 +165,10 @@ export class PessoaFormPageComponent implements OnInit, OnDestroy {
         next: () => {
           this.router.navigate(['./pessoa'])
         },
-        error: async () => {
+        error: async (e) => {
           const alerta = await this.alertController.create({
             header: 'Erro',
-            message: 'Não foi possível atualizar os dados da pessoa',
+            message: e.error?.statusCode != 500 ? e.error.message : 'Não foi possível atualizar os dados da pessoa',
             buttons: ['Ok']
           })
           alerta.present()

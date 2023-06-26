@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { AnimalService } from 'src/app/animal/services/animal.service';
+import { AnimalInterface } from 'src/app/animal/types/animal.interface';
+import { FuncionarioService } from 'src/app/funcionario/services/funcionario.service';
 import { FuncionarioInterface } from 'src/app/funcionario/types/funcionario.interface';
-import { PessoaInterface } from 'src/app/pessoa/types/pessoa.interface';
 import { LoadingService } from 'src/app/shared/services/loading.service';
 import { AtendimentoService } from '../../services/atendimento.service';
-import { FuncionarioService } from 'src/app/funcionario/services/funcionario.service';
-import { PessoaService } from 'src/app/pessoa/services/pessoa.service';
 
 @Component({
   selector: 'app-atendimento-form-page',
@@ -20,8 +20,8 @@ export class AtendimentoFormPageComponent implements OnInit, OnDestroy {
   subscription = new Subscription();
   createMode: boolean = false;
   editMode: boolean = false;
-  id!: number;
-  pessoas: PessoaInterface[] = [];
+  id!: string;
+  animais: AnimalInterface[] = [];
   funcionarios: FuncionarioInterface[] = [];
 
   constructor(
@@ -29,7 +29,7 @@ export class AtendimentoFormPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private formBuilder: FormBuilder,
     private atendimentoService: AtendimentoService,
-    private pessoaService: PessoaService,
+    private animalService: AnimalService,
     private funcionarioService: FuncionarioService,
     private alertController: AlertController,
     private loadingService: LoadingService,
@@ -37,18 +37,18 @@ export class AtendimentoFormPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadingService
-    this.initializeForm();
-    this.loadPessoas();
+    this.loadingService;
+    this.loadAnimais();
     this.loadFuncionarios();
+    this.initializeForm();
     this.loadAtendimentoOnEditMode()
   }
 
-  private async loadPessoas() {
+  private async loadAnimais() {
     this.loadingService.on();
     this.subscription.add(
-      this.pessoaService.getPessoas().subscribe((response) => {
-        this.pessoas = response;
+      this.animalService.getAnimais().subscribe((response) => {
+        this.animais = response;
         this.loadingService.off();
       })
     );
@@ -72,15 +72,15 @@ export class AtendimentoFormPageComponent implements OnInit, OnDestroy {
     if (this.editMode) {
 
       const id = this.activatedRoute.snapshot.paramMap.get('id');
-      this.id = id ? parseInt(id) : -1;
+      this.id = id ? id : '-1';
 
-      if (this.id !== -1) {
+      if (this.id !== '-1') {
         this.loadingService.on()
         this.atendimentoService.getAtendimento(this.id).subscribe((atendimento) => {
           this.atendimentoForm.patchValue({
             data: atendimento.data,
             funcionario: atendimento.funcionario,
-            pessoa: atendimento.pessoa,
+            animal: atendimento.animal,
             valor: atendimento.valor,
             pago: atendimento.pago,
           })
@@ -94,9 +94,9 @@ export class AtendimentoFormPageComponent implements OnInit, OnDestroy {
     this.atendimentoForm = this.formBuilder.group({
       funcionario: ["", [
         Validators.required,
-        this.validaFuncionario()
+        // this.validaFuncionario()
       ]],
-      pessoa: ["", [
+      animal: ["", [
         Validators.required
       ]],
       data: ['2000-01-01', [
@@ -104,20 +104,18 @@ export class AtendimentoFormPageComponent implements OnInit, OnDestroy {
       ]],
       valor: [100, [
         Validators.required,
-        Validators.min(80),
+        // Validators.min(0),
       ]],
-      pago: 'N'
+      pago: false
     })
   }
 
-  validaFuncionario(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-
-      if (this.atendimentoForm?.value?.pessoa?.id === control.value.pessoa?.id) return { invalidFunc: 'teste' };
-
-      return null;
-    }
-  };
+  // validaFuncionario(): ValidatorFn {
+  //   return (control: AbstractControl): ValidationErrors | null => {
+  //     if (this.atendimentoForm?.value?.pessoa?.id === control.value.pessoa?.id) return { invalidFunc: 'teste' };
+  //     return null;
+  //   }
+  // };
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe()
@@ -130,10 +128,10 @@ export class AtendimentoFormPageComponent implements OnInit, OnDestroy {
           () => {
             this.router.navigate(['./atendimento'])
           },
-          async () => {
+          async (e) => {
             const alerta = await this.alertController.create({
               header: 'Erro',
-              message: 'Não foi possível salvar os dados do atendimento',
+              message: e.error?.statusCode != 500 ? e.error.message : 'Não foi possível salvar os dados do atendimento',
               buttons: ['Ok']
             })
             alerta.present()
@@ -148,10 +146,10 @@ export class AtendimentoFormPageComponent implements OnInit, OnDestroy {
         next: () => {
           this.router.navigate(['./atendimento'])
         },
-        error: async () => {
+        error: async (e) => {
           const alerta = await this.alertController.create({
             header: 'Erro',
-            message: 'Não foi possível atualizar os dados do atendimento',
+            message: e.error?.statusCode != 500 ? e.error.message : 'Não foi possível atualizar os dados do atendimento',
             buttons: ['Ok']
           })
           alerta.present()
@@ -164,7 +162,7 @@ export class AtendimentoFormPageComponent implements OnInit, OnDestroy {
     this.router.navigate(['./atendimento'])
   }
 
-  compareWithPessoa(o1: PessoaInterface, o2: PessoaInterface) {
+  compareWithAnimal(o1: AnimalInterface, o2: AnimalInterface) {
     return o1 && o2 ? o1.id === o2.id : o1 === o2;
   }
 

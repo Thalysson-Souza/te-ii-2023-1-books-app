@@ -26,7 +26,7 @@ const routes: Routes = [
   {
     path: 'atendimento',
     loadChildren: () => import('./atendimento/atendimento.module').then(m => m.AtendimentoModule)
-  }
+  },
 ];
 
 @NgModule({

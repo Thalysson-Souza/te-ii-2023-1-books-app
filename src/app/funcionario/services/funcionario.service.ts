@@ -8,35 +8,35 @@ import { FuncionarioInterface } from '../types/funcionario.interface';
 export class FuncionarioService {
   constructor(private httpClient: HttpClient) { }
 
-  getFuncionario(id: number): Observable<FuncionarioInterface> {
+  getFuncionario(id: string): Observable<FuncionarioInterface> {
     return this.httpClient.get<FuncionarioInterface>(
-      `${environment.apiUrl}/funcionario/${id}`
+      `${environment.apiUrl}/funcionarios/${id}`
     )
   }
 
   getFuncionarios(): Observable<FuncionarioInterface[]> {
     return this.httpClient.get<FuncionarioInterface[]>(
-      `${environment.apiUrl}/funcionario`
+      `${environment.apiUrl}/funcionarios`
     );
   }
 
   updateFuncionario(funcionario: FuncionarioInterface): Observable<FuncionarioInterface> {
     return this.httpClient.put<FuncionarioInterface>(
-      `${environment.apiUrl}/funcionario/${funcionario.id}`,
+      `${environment.apiUrl}/funcionarios/${funcionario.id}`,
       funcionario
     )
   }
 
   saveFuncionario(funcionario: FuncionarioInterface): Observable<FuncionarioInterface> {
     return this.httpClient.post<FuncionarioInterface>(
-      `${environment.apiUrl}/funcionario`,
+      `${environment.apiUrl}/funcionarios`,
       funcionario
     );
   }
 
   removeFuncionario(funcionario: FuncionarioInterface): Observable<void> {
     return this.httpClient.delete<void>(
-      `${environment.apiUrl}/funcionario/${funcionario.id}`
+      `${environment.apiUrl}/funcionarios/${funcionario.id}`
     );
   }
 

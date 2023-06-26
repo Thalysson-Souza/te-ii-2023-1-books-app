@@ -18,7 +18,7 @@ export class AnimalFormPageComponent implements OnInit, OnDestroy {
   subscription = new Subscription();
   createMode: boolean = false;
   editMode: boolean = false;
-  id!: number;
+  id!: string;
   pessoas: PessoaInterface[] = [];
 
   constructor(
@@ -57,9 +57,9 @@ export class AnimalFormPageComponent implements OnInit, OnDestroy {
     if (this.editMode) {
 
       const id = this.activatedRoute.snapshot.paramMap.get('id');
-      this.id = id ? parseInt(id) : -1;
+      this.id = id ? id : '-1';
 
-      if (this.id !== -1) {
+      if (this.id !== '-1') {
         this.loadingService.on()
         this.animalService.getAnimal(this.id).subscribe((animal) => {
           this.animalForm.patchValue({
@@ -89,7 +89,7 @@ export class AnimalFormPageComponent implements OnInit, OnDestroy {
       ],
       dataNascimento: ['1980-01-01', [
         Validators.required,
-        this.validaData()
+        // this.validaData()
       ]],
       genero: 'F',
       descricao: ['', [
@@ -123,10 +123,10 @@ export class AnimalFormPageComponent implements OnInit, OnDestroy {
           () => {
             this.router.navigate(['./animal'])
           },
-          async () => {
+          async (e) => {
             const alerta = await this.alertController.create({
               header: 'Erro',
-              message: 'Não foi possível salvar os dados do animal',
+              message: e.error?.statusCode != 500 ? e.error.message : 'Não foi possível salvar os dados do animal',
               buttons: ['Ok']
             })
             alerta.present()
@@ -141,10 +141,10 @@ export class AnimalFormPageComponent implements OnInit, OnDestroy {
         next: () => {
           this.router.navigate(['./animal'])
         },
-        error: async () => {
+        error: async (e) => {
           const alerta = await this.alertController.create({
             header: 'Erro',
-            message: 'Não foi possível atualizar os dados do animal',
+            message: e.error?.statusCode != 500 ? e.error.message : 'Não foi possível atualizar os dados do animal',
             buttons: ['Ok']
           })
           alerta.present()

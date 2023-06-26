@@ -67,7 +67,21 @@ export class AtendimentoListPageComponent implements ViewWillEnter, ViewDidLeave
           text: 'Sim',
           handler: () => {
             this.subscriptions.add(
-              this.atendimentoService.removeAtendimento(atendimento).subscribe(() => this.listar())
+              this.atendimentoService.removeAtendimento(atendimento).subscribe(
+                {
+                  next: () => {
+                    this.listar()
+                  },
+                  error: async (e) => {
+                    const alerta = await this.alertController.create({
+                      header: 'Erro',
+                      message: e.error?.statusCode != 500 ? e.error.message : 'Não foi possível excluir o atendimento.',
+                      buttons: ['Ok']
+                    })
+                    alerta.present()
+                  }
+                }
+              )
             );
           },
         },

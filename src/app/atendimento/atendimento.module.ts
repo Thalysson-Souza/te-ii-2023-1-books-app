@@ -9,10 +9,11 @@ import { AtendimentoRoutingModule } from './atendimento-routing.module';
 import { AtendimentoFormPageComponent } from './components/atendimento-form-page/atendimento-form-page.component';
 import { AtendimentoListPageComponent } from './components/atendimento-list-page/atendimento-list-page.component';
 import { AtendimentoService } from './services/atendimento.service';
+import { AnimalService } from '../animal/services/animal.service';
 
 @NgModule({
   imports: [CommonModule, HttpClientModule, IonicModule, FormsModule, ReactiveFormsModule, AtendimentoRoutingModule],
   declarations: [AtendimentoListPageComponent, AtendimentoFormPageComponent],
-  providers: [AtendimentoService, PessoaService, FuncionarioService],
+  providers: [AtendimentoService, AnimalService, FuncionarioService],
 })
 export class AtendimentoModule { }

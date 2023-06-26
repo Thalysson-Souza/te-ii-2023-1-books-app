@@ -8,35 +8,35 @@ import { AtendimentoInterface } from '../types/atendimento.interface';
 export class AtendimentoService {
   constructor(private httpClient: HttpClient) { }
 
-  getAtendimento(id: number): Observable<AtendimentoInterface> {
+  getAtendimento(id: string): Observable<AtendimentoInterface> {
     return this.httpClient.get<AtendimentoInterface>(
-      `${environment.apiUrl}/atendimento/${id}`
+      `${environment.apiUrl}/atendimentos/${id}`
     )
   }
 
   getAtendimentos(): Observable<AtendimentoInterface[]> {
     return this.httpClient.get<AtendimentoInterface[]>(
-      `${environment.apiUrl}/atendimento`
+      `${environment.apiUrl}/atendimentos`
     );
   }
 
   updateAtendimento(atendimento: AtendimentoInterface): Observable<AtendimentoInterface> {
     return this.httpClient.put<AtendimentoInterface>(
-      `${environment.apiUrl}/atendimento/${atendimento.id}`,
+      `${environment.apiUrl}/atendimentos/${atendimento.id}`,
       atendimento
     )
   }
 
   saveAtendimento(atendimento: AtendimentoInterface): Observable<AtendimentoInterface> {
     return this.httpClient.post<AtendimentoInterface>(
-      `${environment.apiUrl}/atendimento`,
+      `${environment.apiUrl}/atendimentos`,
       atendimento
     );
   }
 
   removeAtendimento(atendimento: AtendimentoInterface): Observable<void> {
     return this.httpClient.delete<void>(
-      `${environment.apiUrl}/atendimento/${atendimento.id}`
+      `${environment.apiUrl}/atendimentos/${atendimento.id}`
     );
   }
 }

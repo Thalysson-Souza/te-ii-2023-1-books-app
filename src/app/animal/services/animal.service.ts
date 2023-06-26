@@ -8,35 +8,35 @@ import { AnimalInterface } from '../types/animal.interface';
 export class AnimalService {
   constructor(private httpClient: HttpClient) { }
 
-  getAnimal(id: number): Observable<AnimalInterface> {
+  getAnimal(id: string): Observable<AnimalInterface> {
     return this.httpClient.get<AnimalInterface>(
-      `${environment.apiUrl}/animal/${id}`
+      `${environment.apiUrl}/animais/${id}`
     )
   }
 
   getAnimais(): Observable<AnimalInterface[]> {
     return this.httpClient.get<AnimalInterface[]>(
-      `${environment.apiUrl}/animal`
+      `${environment.apiUrl}/animais`
     );
   }
 
   updateAnimal(animal: AnimalInterface): Observable<AnimalInterface> {
     return this.httpClient.put<AnimalInterface>(
-      `${environment.apiUrl}/animal/${animal.id}`,
+      `${environment.apiUrl}/animais/${animal.id}`,
       animal
     )
   }
 
   saveAnimal(animal: AnimalInterface): Observable<AnimalInterface> {
     return this.httpClient.post<AnimalInterface>(
-      `${environment.apiUrl}/animal`,
+      `${environment.apiUrl}/animais`,
       animal
     );
   }
 
   removeAnimal(animal: AnimalInterface): Observable<void> {
     return this.httpClient.delete<void>(
-      `${environment.apiUrl}/animal/${animal.id}`
+      `${environment.apiUrl}/animais/${animal.id}`
     );
   }
 }

@@ -19,7 +19,7 @@ export class FuncionarioFormPageComponent implements OnInit, OnDestroy {
   subscription = new Subscription();
   createMode: boolean = false;
   editMode: boolean = false;
-  id!: number;
+  id!: string;
   pessoas: PessoaInterface[] = [];
 
   constructor(
@@ -71,9 +71,9 @@ export class FuncionarioFormPageComponent implements OnInit, OnDestroy {
     if (this.editMode) {
 
       const id = this.activatedRoute.snapshot.paramMap.get('id');
-      this.id = id ? parseInt(id) : -1;
+      this.id = id ? id : '-1';
 
-      if (this.id !== -1) {
+      if (this.id !== '-1') {
         this.loadingService.on()
         this.funcionarioService.getFuncionario(this.id).subscribe((funcionario) => {
           this.funcionarioForm.patchValue({
@@ -92,7 +92,7 @@ export class FuncionarioFormPageComponent implements OnInit, OnDestroy {
 
       salario: [1000, [
         Validators.required,
-        Validators.min(1000)
+        // Validators.min(0)
       ]],
       funcao: ["", [
         Validators.required,
@@ -116,10 +116,10 @@ export class FuncionarioFormPageComponent implements OnInit, OnDestroy {
           () => {
             this.router.navigate(['./funcionario'])
           },
-          async () => {
+          async (e) => {
             const alerta = await this.alertController.create({
               header: 'Erro',
-              message: 'Não foi possível salvar os dados do funcionario',
+              message: e.error?.statusCode != 500 ? e.error.message : 'Não foi possível salvar os dados do funcionario',
               buttons: ['Ok']
             })
             alerta.present()
@@ -134,10 +134,10 @@ export class FuncionarioFormPageComponent implements OnInit, OnDestroy {
         next: () => {
           this.router.navigate(['./funcionario'])
         },
-        error: async () => {
+        error: async (e) => {
           const alerta = await this.alertController.create({
             header: 'Erro',
-            message: 'Não foi possível atualizar os dados do funcionario',
+            message: e.error?.statusCode != 500 ? e.error.message : 'Não foi possível atualizar os dados do funcionario',
             buttons: ['Ok']
           })
           alerta.present()
